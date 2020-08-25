@@ -13,6 +13,7 @@ class FaceMirror:
         self.folder_create('./data/images/temp/half/')
         self.folder_create('./data/images/temp/shronk/')
         self.folder_create('./data/images/stock/')
+        self.folder_create('./data/images/final/')
 
     def run(self, image_path, side_choise):
         print("FaceMirror.py running")
@@ -25,13 +26,11 @@ class FaceMirror:
         self.face_slice(self.side_choise)
         for image in os.listdir('./data/images/temp/half/'):
             self.image_flip(image)
-        self.image_overlay()
-
-        self.temp_clear('./data/images/temp/half/')
-        self.temp_clear('./data/images/temp/shronk/')
+        filename = self.image_overlay()
+        return filename
 
     def face_detect(self, image_path): #face detection in the given image using haarcascades
-        face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+        face_cascade = cv2.CascadeClassifier("./lib/face_mirror/haarcascade_frontalface_default.xml")
         image_grayscale = cv2.cvtColor(self.initial_image, cv2.COLOR_BGR2GRAY)
         self.faces = face_cascade.detectMultiScale(
             image_grayscale,
@@ -47,7 +46,7 @@ class FaceMirror:
         try:
             image_obj = Image.open('./data/images/temp/half/' + image_path)
             flipped_image = image_obj.transpose(Image.FLIP_LEFT_RIGHT)
-            flipped_image.save('temp/half/flip_{}'.format(image_path))
+            flipped_image.save('./data/images/temp/half/flip_{}'.format(image_path))
 
             image1 = Image.open('./data/images/temp/half/' + image_path)
             image2 = Image.open('./data/images/temp/half/flip_' + image_path)
@@ -68,20 +67,26 @@ class FaceMirror:
             pass
         final.save('./data/images/temp/shronk/{}'.format(image))
 
-    def temp_clear(self, directory): #deleting the files in given directory
-        files = glob.glob('./data/images/temp/' + directory + '*')
-        for f in files:
-            os.remove(f)
-
     def folder_create(self, name): #creating a folder with a given name
         if not os.path.exists(name):
             os.makedirs(name)
 
+    def clear(self):
+        self.folder_clear('stock/')
+        self.folder_clear('temp/half/')
+        self.folder_clear('temp/shronk/')
+        self.folder_clear('final/')
+
+    def folder_clear(self, directory): #deleting the files in given directory
+        files = glob.glob('./data/images/' + directory + '*')
+        for f in files:
+            os.remove(f)
+
     def face_slice(self, side): #slicing the left or right side of the image and saving to a new one
         for x,y,w,h in self.faces:
-            if side == '-l': 
+            if side == 'left': 
                 roi_color = self.initial_image[y: y + h, x: x + w//2]
-            elif side == '-r':
+            elif side == 'right':
                 roi_color = self.initial_image[y: y + h, x + w//2: x + w] 
             else:
                 print('Choose the side')
@@ -103,6 +108,7 @@ class FaceMirror:
                 self.initial_image[y1:y2, x1:x2, c] = (alpha_s * s_img[:, :, c] +
                                         alpha_l * self.initial_image[y1:y2, x1:x2, c])
         cv2.imwrite('./data/images/final/{}x{}.jpg'.format(w,h), self.initial_image)
+        return f"{w}x{h}.jpg"
 
 
 face_mirror = FaceMirror()

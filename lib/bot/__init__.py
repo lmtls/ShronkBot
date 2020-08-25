@@ -40,15 +40,17 @@ class Bot(BotBase):
 
     async def on_error(self, err, *args, **kwargs):
         if err == "on_command_error":
-            args[0].send("Error occured")
+            await args[0].send("Error occured")
         await self.channel.send("Something went wrong")
     
     async def on_command_error(self, ctx, exc):
         if isinstance(exc, CommandNotFound):
             pass
         elif hasattr(exc, "original"):
+            print(exc.original.text)
             raise exc.original
         else:
+            print(exc.text)
             raise exc
 
     async def on_ready(self):
@@ -62,7 +64,7 @@ class Bot(BotBase):
             print('bot reconnected')
 
     async def on_message(self, message):
-        if message.author.bot and message.author != message.guild.me:
-            self.process_commands(message)
+        if message.author.bot != message.guild.me:
+            await self.process_commands(message)
 
 bot = Bot()
