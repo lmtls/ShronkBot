@@ -15,10 +15,11 @@ class FaceMirror:
         self.folder_create('./data/images/stock/')
         self.folder_create('./data/images/final/')
 
-    def run(self, image_path, side_choise):
+    def run(self, image_path, cascade_path, side_choise):
         print("FaceMirror.py running")
         self.image_path = "./data/images/stock/" + image_path
         self.side_choise = side_choise
+        self.cascade_path = cascade_path
         self.initial_image = cv2.imread(self.image_path)
         self.faces = self.face_detect(self.image_path)
         print("{} faces found".format(len(self.faces)))
@@ -30,7 +31,7 @@ class FaceMirror:
         return filename
 
     def face_detect(self, image_path): #face detection in the given image using haarcascades
-        face_cascade = cv2.CascadeClassifier("./lib/face_mirror/haarcascade_frontalface_default.xml")
+        face_cascade = cv2.CascadeClassifier(self.cascade_path)
         image_grayscale = cv2.cvtColor(self.initial_image, cv2.COLOR_BGR2GRAY)
         self.faces = face_cascade.detectMultiScale(
             image_grayscale,
