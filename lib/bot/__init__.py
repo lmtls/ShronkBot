@@ -5,7 +5,7 @@ import requests
 from glob import glob
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from dotenv import load_dotenv
-PREFIX = '~'
+PREFIX = '!'
 OWNERIDS = [464482961488871436]
 COGS = [path.split('/')[-1][:-6] for path in glob("./lib/cogs/*cog.py")]
 

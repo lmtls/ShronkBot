@@ -21,13 +21,12 @@ class FaceMirror:
         self.side_choise = side_choise
         self.initial_image = cv2.imread(self.image_path)
         self.faces = self.face_detect(self.image_path)
-        print("{} faces found".format(len(self.faces)))
 
         self.face_slice(self.side_choise)
         for image in os.listdir('./data/images/temp/half/'):
             self.image_flip(image)
         filename = self.image_overlay()
-        return filename
+        return filename, len(self.faces)
 
     def face_detect(self, image_path): #face detection in the given image using haarcascades
         face_cascade = cv2.CascadeClassifier("./lib/face_mirror/haarcascade_frontalface_default.xml")
@@ -38,8 +37,6 @@ class FaceMirror:
             minNeighbors=5,
             minSize=(20, 20)
         )
-
-        print("{} faces found".format(len(self.faces)))
         return self.faces      
 
     def image_flip(self, image_path): #flipping the image by vertical axis
@@ -107,8 +104,10 @@ class FaceMirror:
             for c in range(0, 3):
                 self.initial_image[y1:y2, x1:x2, c] = (alpha_s * s_img[:, :, c] +
                                         alpha_l * self.initial_image[y1:y2, x1:x2, c])
-        cv2.imwrite('./data/images/final/{}x{}.jpg'.format(w,h), self.initial_image)
-        return f"{w}x{h}.jpg"
-
+        if len(self.faces) > 0:
+            cv2.imwrite('./data/images/final/{}x{}.jpg'.format(w,h), self.initial_image)
+            return f"{w}x{h}.jpg"
+        else:
+            return "none"
 
 face_mirror = FaceMirror()
