@@ -16,7 +16,6 @@ class FaceMirror:
         self.folder_create('./data/images/final/')
 
     def run(self, image_path, cascade_path, side_choise):
-        print("FaceMirror.py running")
         self.image_path = "./data/images/stock/" + image_path
         self.side_choise = side_choise
         self.cascade_path = cascade_path

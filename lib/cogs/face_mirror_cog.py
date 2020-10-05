@@ -52,8 +52,12 @@ class FaceMirrorCog(Cog):
         file = open(f"./data/images/stock/{filename}", "wb")
         file.write(response.content)
         file.close()
-        final_filename = face_mirror.run(filename, "./lib/face_mirror/haarcascade_frontalcatface.xml", "left")
-        await ctx.send(file=File(f'./data/images/final/{final_filename}'))
+        final_filename, face_count = face_mirror.run(filename, "./lib/face_mirror/haarcascade_frontalcatface.xml", 'left')
+        if face_count > 0:
+            await ctx.send(f"{face_count} faces found")
+            await ctx.send(file=File(f'./data/images/final/{final_filename}'))
+        else:
+            await ctx.send("No faces found")
         face_mirror.clear()
 
     @command(name="shrrneko")
@@ -65,14 +69,47 @@ class FaceMirrorCog(Cog):
         file = open(f"./data/images/stock/{filename}", "wb")
         file.write(response.content)
         file.close()
-        final_filename = face_mirror.run(filename, "./lib/face_mirror/haarcascade_frontalcatface.xml", "right")
-        await ctx.send(file=File(f'./data/images/final/{final_filename}'))
+        final_filename, face_count = face_mirror.run(filename, "./lib/face_mirror/haarcascade_frontalcatface.xml", 'right')
+        if face_count > 0:
+            await ctx.send(f"{face_count} faces found")
+            await ctx.send(file=File(f'./data/images/final/{final_filename}'))
+        else:
+            await ctx.send("No faces found")
         face_mirror.clear()
-
-    @command(name="Hi")
-    async def hi(self, ctx):
-        await ctx.send("Hello!")
-        print("Hello")
+        
+    @command(name="shrlweeb")
+    async def shronk_anime_left(self, ctx):
+        attachment = ctx.message.attachments[0]
+        filename = attachment.filename
+        url = attachment.url
+        response = requests.get(url)
+        file = open(f"./data/images/stock/{filename}", "wb")
+        file.write(response.content)
+        file.close()
+        final_filename, face_count = face_mirror.run(filename, "./lib/face_mirror/lbpcascade_animeface.xml", 'left')
+        if face_count > 0:
+            await ctx.send(f"{face_count} faces found")
+            await ctx.send(file=File(f'./data/images/final/{final_filename}'))
+        else:
+            await ctx.send("No faces found")
+        face_mirror.clear()
+        
+    @command(name="shrrweeb")
+    async def shronk_anime_right(self, ctx):
+        attachment = ctx.message.attachments[0]
+        filename = attachment.filename
+        url = attachment.url
+        response = requests.get(url)
+        file = open(f"./data/images/stock/{filename}", "wb")
+        file.write(response.content)
+        file.close()
+        final_filename, face_count = face_mirror.run(filename, "./lib/face_mirror/lbpcascade_animeface.xml", 'right')
+        if face_count > 0:
+            await ctx.send(f"{face_count} faces found")
+            await ctx.send(file=File(f'./data/images/final/{final_filename}'))
+        else:
+            await ctx.send("No faces found")
+        face_mirror.clear()
 
 def setup(bot):
     bot.add_cog(FaceMirrorCog(bot))
