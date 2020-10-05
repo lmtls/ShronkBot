@@ -7,7 +7,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from dotenv import load_dotenv
 PREFIX = '!'
 OWNERIDS = [464482961488871436]
-COGS = [path.split('/')[-1][:-6] for path in glob("./lib/cogs/*cog.py")]
+# COGS = [path.split('/')[-1][:-6] for path in glob("./lib/cogs/*cog.py")]
 
 class Bot(BotBase):
     def __init__(self):
@@ -27,21 +27,20 @@ class Bot(BotBase):
 
         self.VERSION = version
         load_dotenv()
-        self.TOKEN = os.getenv('DISCORD_TOKEN')
+        self.TOKEN = os.getenv("DISCORD_TOKEN")
 
-        print('running bot...')
+        print("running bot...")
         super().run(self.TOKEN, reconnect=True)
 
     async def on_connect(self):
-        print('bot connected')
+        print("bot connected")
 
     async def on_disconnect(self):
-        print('bot disconnected')
+        print("bot disconnected")
 
     async def on_error(self, err, *args, **kwargs):
         if err == "on_command_error":
             await args[0].send("Error occured")
-        await self.channel.send("Something went wrong")
     
     async def on_command_error(self, ctx, exc):
         if isinstance(exc, CommandNotFound):
@@ -58,10 +57,10 @@ class Bot(BotBase):
             self.ready = True
             self.guild = self.get_guild(743554703086059601)
             self.channel = self.get_channel(743554703622668410)
-            await self.channel.send('Bot Online!')
-            print('bot ready')
+            await self.channel.send("Bot Online!")
+            print("bot ready")
         else:
-            print('bot reconnected')
+            print("bot reconnected")
 
     async def on_message(self, message):
         if message.author.bot != message.guild.me:
